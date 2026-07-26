@@ -98,11 +98,9 @@ export default function App() {
   const [activeTab, setActiveTab] = useState<"home" | "login" | "register">("home");
   const [selectedCategory, setSelectedCategory] = useState<string>("Tất cả");
 
-  // Authentication State
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isAdminView, setIsAdminView] = useState<boolean>(false);
 
-  // Form States - Auth
   const [loginUsername, setLoginUsername] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
 
@@ -113,13 +111,11 @@ export default function App() {
   const [regPassword, setRegPassword] = useState("");
   const [regConfirmPassword, setRegConfirmPassword] = useState("");
 
-  // Form States - Admin Add Product
   const [pName, setPName] = useState("");
   const [pPrice, setPPrice] = useState("");
   const [pCategory, setPCategory] = useState("Liên Quân");
   const [pImageUrl, setPImageUrl] = useState("");
 
-  // Handlers
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (loginUsername === "admin" && loginPassword === "123") {
@@ -131,9 +127,9 @@ export default function App() {
       const normalUser: User = { username: loginUsername, isAdmin: false };
       setCurrentUser(normalUser);
       setActiveTab("home");
-      alert(Xin chào ${loginUsername}, đăng nhập thành công!);
+      alert(Đăng nhập thành công! Chào mừng ${loginUsername});
     } else {
-      alert("Vui lòng điền đầy đủ thông tin!");
+      alert("Sai tên đăng nhập hoặc mật khẩu!");
     }
   };
 
@@ -196,7 +192,7 @@ export default function App() {
   return (
     <div style={{ fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif", backgroundColor: "#f3f4f6", minHeight: "100vh", color: "#1f2937" }}>
       
-      {/* 🟢 TOP HEADER BAR */}
+      {/* TOP HEADER BAR */}
       <div style={{ backgroundColor: "#ffffff", borderBottom: "1px solid #e5e7eb", fontSize: "13px", padding: "6px 24px", display: "flex", justifyContent: "space-between", color: "#6b7280" }}>
         <div>🔥 ShopAcc89.com - Hệ thống túi mù game tự động 24/7</div>
         <div style={{ display: "flex", gap: "16px" }}>
@@ -205,10 +201,9 @@ export default function App() {
         </div>
       </div>
 
-      {/* 🟢 MAIN HEADER */}
+      {/* MAIN HEADER */}
       <header style={{ backgroundColor: "#ffffff", padding: "12px 24px", borderBottom: "1px solid #e5e7eb", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-          {/* LOGO */}
           <div 
             onClick={() => { setActiveTab("home"); setIsAdminView(false); }}
             style={{ fontSize: "22px", fontWeight: "900", color: "#16a34a", cursor: "pointer", display: "flex", alignItems: "center", gap: "6px" }}
@@ -217,7 +212,6 @@ export default function App() {
             SHOPACC89
           </div>
 
-          {/* SEARCH BAR & BUTTONS */}
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <button style={{ backgroundColor: "#e5e7eb", border: "none", padding: "8px 14px", borderRadius: "6px", fontSize: "13px", fontWeight: "600", cursor: "pointer" }}>
               ☰ Danh mục
@@ -243,7 +237,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* RIGHT CONTROL PANEL */}
         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <span style={{ cursor: "pointer", fontSize: "18px" }}>🌐</span>
           <span style={{ cursor: "pointer", fontSize: "18px" }}>🔔</span>
@@ -292,7 +285,7 @@ export default function App() {
         </div>
       </header>
 
-      {/* 🟢 NAVIGATION MENU BAR */}
+      {/* NAVIGATION MENU BAR */}
       <nav style={{ backgroundColor: "#ffffff", borderBottom: "1px solid #e5e7eb", padding: "0 24px", overflowX: "auto" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", gap: "24px", padding: "12px 0", fontSize: "14px", fontWeight: "600", color: "#374151" }}>
           <span onClick={() => { setActiveTab("home"); setIsAdminView(false); }} style={{ cursor: "pointer", color: activeTab === "home" ? "#16a34a" : "inherit" }}>🏠 Trang chủ</span>
@@ -306,7 +299,7 @@ export default function App() {
         </div>
       </nav>
 
-      {/* 🟢 ADMIN MANAGEMENT VIEW */}
+      {/* MAIN BODY CONTENT */}
       {isAdminView && currentUser?.isAdmin ? (
         <div style={{ maxWidth: "800px", margin: "24px auto", padding: "0 16px" }}>
           <div style={{ backgroundColor: "#fff", padding: "24px", borderRadius: "12px", boxShadow: "0 1px 3px rgba(0,0,0,0.1)", marginBottom: "24px" }}>
@@ -341,7 +334,7 @@ export default function App() {
         </div>
       ) : activeTab === "login" ? (
         
-        /* 🟢 LOGIN PAGE */
+        /* LOGIN PAGE */
         <div style={{ maxWidth: "450px", margin: "40px auto", padding: "0 16px" }}>
           <div style={{ backgroundColor: "#ffffff", padding: "32px", borderRadius: "16px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)", textAlign: "center" }}>
             <div style={{ fontSize: "28px", marginBottom: "8px" }}>🎁</div>
@@ -395,7 +388,7 @@ export default function App() {
 
       ) : activeTab === "register" ? (
 
-        /* 🟢 REGISTER PAGE */
+        /* REGISTER PAGE */
         <div style={{ maxWidth: "480px", margin: "40px auto", padding: "0 16px" }}>
           <div style={{ backgroundColor: "#ffffff", padding: "32px", borderRadius: "16px", boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}>
             <p style={{ color: "#6b7280", fontSize: "13px", marginTop: 0, textAlign: "center" }}>Tạo tài khoản để truy cập quản trị hệ thống.</p>
@@ -448,10 +441,9 @@ export default function App() {
 
       ) : (
 
-        /* 🟢 HOME PAGE VIEW */
+        /* HOME PAGE VIEW */
         <main style={{ maxWidth: "1200px", margin: "24px auto", padding: "0 16px" }}>
           
-          {/* BANNER STATS BOX */}
           <div style={{ backgroundColor: "#ffffff", borderRadius: "16px", padding: "32px 24px", textAlign: "center", boxShadow: "0 2px 8px rgba(0,0,0,0.04)", marginBottom: "32px" }}>
             <span style={{ backgroundColor: "#f3f4f6", padding: "4px 12px", borderRadius: "20px", fontSize: "12px", fontWeight: "bold", color: "#374151" }}>Túi mù tự động 24/7</span>
             <h1 style={{ fontSize: "28px", fontWeight: "800", color: "#111827", margin: "12px 0 8px 0" }}>Túi mù game đang mở tại Shopacc89.com</h1>
@@ -474,7 +466,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* CATEGORY FILTER BUTTONS */}
             <div style={{ display: "flex", justifyContent: "center", gap: "10px", flexWrap: "wrap" }}>
               {["Tất cả", "Free Fire", "Liên Quân", "FC Mobile", "Roblox"].map((cat) => (
                 <button 
@@ -497,17 +488,14 @@ export default function App() {
             </div>
           </div>
 
-          {/* SECTION TITLE */}
           <h2 style={{ fontSize: "20px", fontWeight: "800", marginBottom: "20px", textTransform: "uppercase" }}>
             NHẬN ACC GAME MIỄN PHÍ & TÚI MÙ NỔI BẬT
           </h2>
 
-          {/* PRODUCT GRID */}
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "20px" }}>
             {filteredProducts.map((p) => (
               <div key={p.id} style={{ backgroundColor: "#ffffff", borderRadius: "16px", border: "1px solid #e5e7eb", overflow: "hidden", position: "relative", display: "flex", flexDirection: "column" }}>
                 
-                {/* BADGE */}
                 {p.isHot && <span style={{ position: "absolute", top: "12px", left: "12px", backgroundColor: "#f97316", color: "#fff", fontSize: "10px", fontWeight: "800", padding: "2px 8px", borderRadius: "4px" }}>HOT</span>}
                 {p.isFree && <span style={{ position: "absolute", top: "12px", left: "12px", backgroundColor: "#16a34a", color: "#fff", fontSize: "10px", fontWeight: "800", padding: "2px 8px", borderRadius: "4px" }}>MIỄN PHÍ 100%</span>}
 
@@ -519,7 +507,6 @@ export default function App() {
                     <div style={{ fontSize: "12px", color: "#6b7280", marginBottom: "4px" }}>Đã chơi {p.plays} lượt</div>
                     <div style={{ fontSize: "12px", color: "#6b7280", marginBottom: "8px" }}>Lượt Xem: {p.views}</div>
                     
-                    {/* RATING STARS */}
                     <div style={{ color: "#eab308", fontSize: "12px", marginBottom: "12px" }}>
                       ★★★★★ <span style={{ color: "#374151", fontWeight: "bold" }}>5</span>
                     </div>
@@ -542,10 +529,12 @@ export default function App() {
         </main>
       )}
 
-      {/* FOOTER */}
       <footer style={{ marginTop: "60px", backgroundColor: "#ffffff", borderTop: "1px solid #e5e7eb", padding: "24px", textAlign: "center", fontSize: "13px", color: "#6b7280" }}>
         © 2026 ShopAcc89. All rights reserved.
       </footer>
     </div>
   );
 }
+Đã gửi
+Soạn
+Viết cho
