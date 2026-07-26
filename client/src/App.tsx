@@ -1,4 +1,4 @@
-import React, { useState } from "interface" ? {} : React; // Keep imports clean
+import React, { useState } from "react";
 
 interface Product {
   id: number;
@@ -41,24 +41,19 @@ export default function App() {
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [cartCount, setCartCount] = useState<number>(0);
   
-  // Danh sách tài khoản mẫu (Có sẵn 1 tài khoản Admin cốt lõi)
+  // Tài khoản Admin mẫu
   const [users, setUsers] = useState<User[]>([
     { username: "admin", password: "123", isAdmin: true }
   ]);
   
-  // Trạng thái đăng nhập của người dùng hiện tại
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  
-  // Trạng thái giao diện Modal Đăng nhập / Đăng ký
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const [isRegisterMode, setIsRegisterMode] = useState<boolean>(false);
   const [usernameInput, setUsernameInput] = useState("");
   const [passwordInput, setPasswordInput] = useState("");
 
-  // Trạng thái bật/tắt trang Quản lý (Admin Dashboard)
   const [isAdminView, setIsAdminView] = useState<boolean>(false);
 
-  // Form state cho thêm sản phẩm
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("Blindbox");
@@ -67,7 +62,6 @@ export default function App() {
 
   const addToCart = () => setCartCount((prev) => prev + 1);
 
-  // Xử lý Đăng nhập
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     const foundUser = users.find(
@@ -84,7 +78,6 @@ export default function App() {
     }
   };
 
-  // Xử lý Đăng ký tài khoản mới
   const handleRegister = (e: React.FormEvent) => {
     e.preventDefault();
     if (!usernameInput || !passwordInput) {
@@ -92,13 +85,13 @@ export default function App() {
     }
     const exists = users.some((u) => u.username === usernameInput);
     if (exists) {
-      return alert("Tên tài khoản này đã tồn tại, vui lòng chọn tên khác!");
+      return alert("Tên tài khoản này đã tồn tại!");
     }
 
     const newUser: User = {
       username: usernameInput,
       password: passwordInput,
-      isAdmin: false // Tài khoản đăng ký mới mặc định là khách hàng thường
+      isAdmin: false
     };
 
     setUsers([...users, newUser]);
@@ -109,17 +102,15 @@ export default function App() {
     alert("Đăng ký tài khoản thành công!");
   };
 
-  // Đăng xuất
   const handleLogout = () => {
     setCurrentUser(null);
     setIsAdminView(false);
-    alert("Đã đăng xuất tài khoản!");
+    alert("Đã đăng xuất!");
   };
 
-  // Thêm sản phẩm (Dành riêng cho Admin)
   const handleAddProduct = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !price) return alert("Vui lòng nhập tên và giá sản phẩm!");
+    if (!name || !price) return alert("Vui lòng nhập tên và giá!");
 
     const newProduct: Product = {
       id: Date.now(),
@@ -147,7 +138,6 @@ export default function App() {
 
   return (
     <div style={{ fontFamily: "sans-serif", backgroundColor: "#f9fafb", minHeight: "100vh", paddingBottom: "40px", position: "relative" }}>
-      {/* Header */}
       <header style={{ backgroundColor: "#ffffff", borderBottom: "1px solid #e5e7eb", padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#ec4899", margin: 0, cursor: "pointer" }} onClick={() => setIsAdminView(false)}>
           LQ Shop - Túi Mù 247
@@ -160,7 +150,6 @@ export default function App() {
                 👤 {currentUser.username} {currentUser.isAdmin && "(Admin)"}
               </span>
 
-              {/* Nếu là Admin thì hiện nút Quản lý */}
               {currentUser.isAdmin && (
                 <button 
                   onClick={() => setIsAdminView(!isAdminView)} 
@@ -191,7 +180,6 @@ export default function App() {
         </div>
       </header>
 
-      {/* MODAL ĐĂNG NHẬP / ĐĂNG KÝ */}
       {showAuthModal && (
         <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }}>
           <div style={{ backgroundColor: "#fff", padding: "30px", borderRadius: "12px", width: "350px", boxShadow: "0 4px 12px rgba(0,0,0,0.15)", position: "relative" }}>
@@ -234,7 +222,6 @@ export default function App() {
         </div>
       )}
 
-      {/* GIAO DIỆN QUẢN LÝ ADMIN (Chỉ khi Admin bật) */}
       {isAdminView && currentUser?.isAdmin ? (
         <main style={{ maxWidth: "800px", margin: "24px auto", padding: "0 16px" }}>
           <div style={{ backgroundColor: "#ffffff", padding: "24px", borderRadius: "12px", border: "1px solid #e5e7eb", marginBottom: "32px" }}>
@@ -272,7 +259,6 @@ export default function App() {
           </div>
         </main>
       ) : (
-        /* GIAO DIỆN KHÁCH HÀNG XEM & MUA */
         <>
           <section style={{ backgroundColor: "#fbcfe8", padding: "32px 24px", textAlign: "center", marginBottom: "24px" }}>
             <h2 style={{ fontSize: "28px", color: "#831843", margin: "0 0 8px 0" }}>LQ Shop - Chuyên Túi Mù & Blind Box Chính Hãng</h2>
@@ -310,6 +296,3 @@ export default function App() {
     </div>
   );
 }
-Đã gửi
-Soạn
-
