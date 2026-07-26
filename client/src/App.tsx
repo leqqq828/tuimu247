@@ -10,7 +10,6 @@ interface Product {
   inStock: boolean;
 }
 
-// Dữ liệu sản phẩm mẫu có sẵn
 const INITIAL_PRODUCTS: Product[] = [
   {
     id: 1,
@@ -32,6 +31,9 @@ const INITIAL_PRODUCTS: Product[] = [
   }
 ];
 
+// 🔐 ĐẶT MẬT KHẨU ADMIN CỦA BẠN Ở ĐÂY (VD: 123456)
+const ADMIN_PASSWORD = "123"; 
+
 export default function App() {
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [cartCount, setCartCount] = useState<number>(0);
@@ -46,7 +48,20 @@ export default function App() {
 
   const addToCart = () => setCartCount((prev) => prev + 1);
 
-  // Thêm sản phẩm mới (Admin)
+  // Hàm kiểm tra mật khẩu khi bấm vào nút Admin
+  const handleAdminClick = () => {
+    if (isAdmin) {
+      setIsAdmin(false); // Nếu đang ở trang admin thì bấm để thoát
+    } else {
+      const password = prompt("Nhập mật khẩu Admin để tiếp tục:");
+      if (password === ADMIN_PASSWORD) {
+        setIsAdmin(true);
+      } else if (password !== null) {
+        alert("Sai mật khẩu rồi bạn ơi! ❌");
+      }
+    }
+  };
+
   const handleAddProduct = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !price) return alert("Vui lòng nhập tên và giá sản phẩm!");
@@ -69,7 +84,6 @@ export default function App() {
     alert("Thêm sản phẩm thành công!");
   };
 
-  // Xóa sản phẩm (Admin)
   const handleDeleteProduct = (id: number) => {
     if (confirm("Bạn có chắc muốn xóa sản phẩm này?")) {
       setProducts(products.filter((p) => p.id !== id));
@@ -78,16 +92,15 @@ export default function App() {
 
   return (
     <div style={{ fontFamily: "sans-serif", backgroundColor: "#f9fafb", minHeight: "100vh", paddingBottom: "40px" }}>
-      {/* Header */}
       <header style={{ backgroundColor: "#ffffff", borderBottom: "1px solid #e5e7eb", padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#ec4899", margin: 0 }}>LQ Shop - Túi Mù 247</h1>
         <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          {/* Nút chuyển chế độ Admin */}
+          {/* Nút đăng nhập bảo mật */}
           <button 
-            onClick={() => setIsAdmin(!isAdmin)} 
+            onClick={handleAdminClick} 
             style={{ backgroundColor: isAdmin ? "#111827" : "#f3f4f6", color: isAdmin ? "#fff" : "#374151", padding: "8px 16px", borderRadius: "20px", border: "1px solid #d1d5db", cursor: "pointer", fontWeight: "600" }}
           >
-            {isAdmin ? "⚙️ Thoát Admin" : "⚙️ Trang Admin"}
+            {isAdmin ? "⚙️ Thoát Admin" : "🔒 Trang Admin"}
           </button>
           
           {!isAdmin && (
@@ -98,7 +111,6 @@ export default function App() {
         </div>
       </header>
 
-      {/* Trang ADMIN Quản lý */}
       {isAdmin ? (
         <main style={{ maxWidth: "800px", margin: "24px auto", padding: "0 16px" }}>
           <div style={{ backgroundColor: "#ffffff", padding: "24px", borderRadius: "12px", border: "1px solid #e5e7eb", marginBottom: "32px" }}>
@@ -136,7 +148,6 @@ export default function App() {
           </div>
         </main>
       ) : (
-        /* Trang KHÁCH HÀNG Xem & Mua */
         <>
           <section style={{ backgroundColor: "#fbcfe8", padding: "32px 24px", textAlign: "center", marginBottom: "24px" }}>
             <h2 style={{ fontSize: "28px", color: "#831843", margin: "0 0 8px 0" }}>LQ Shop - Chuyên Túi Mù & Blind Box Chính Hãng</h2>
