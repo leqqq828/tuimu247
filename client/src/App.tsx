@@ -41,7 +41,7 @@ export default function App() {
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [cartCount, setCartCount] = useState<number>(0);
   
-  // Tài khoản Admin mẫu
+  // Tài khoản mẫu
   const [users, setUsers] = useState<User[]>([
     { username: "admin", password: "123", isAdmin: true }
   ]);
@@ -72,7 +72,7 @@ export default function App() {
       setShowAuthModal(false);
       setUsernameInput("");
       setPasswordInput("");
-      alert(Đăng nhập thành công! Chào mừng ${foundUser.username});
+      alert("Đăng nhập thành công!");
     } else {
       alert("Sai tên đăng nhập hoặc mật khẩu! ❌");
     }
