@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-// --- KAI KHÁI BÁO TYPE & PERMISSIONS ---
+// Định nghĩa kiểu dữ liệu (Types)
 type AdminRole = "SUPER_ADMIN" | "CONTENT_ADMIN" | "SUPPORT_ADMIN" | "FINANCE_ADMIN";
 
 interface Product {
@@ -28,25 +28,37 @@ interface StockAccount {
   status: "AVAILABLE" | "SOLD";
 }
 
-export default function App() {
-  // State Tài khoản & Điều hướng
+export default function App(): React.JSX.Element {
+  // State Quản lý điều hướng & Số dư
   const [balance, setBalance] = useState<number>(490000);
   const [username] = useState<string>("Gamer_Pro");
   const [activeTab, setActiveTab] = useState<
-    "home" | "detail" | "withdraw" | "topup" | "card_recharge" | "service" | "system" | "buy_acc" | "ctv" | "ranks" | "guide" | "history_viewed" | "admin"
+    | "home"
+    | "detail"
+    | "withdraw"
+    | "topup"
+    | "card_recharge"
+    | "service"
+    | "system"
+    | "buy_acc"
+    | "ctv"
+    | "ranks"
+    | "guide"
+    | "history_viewed"
+    | "admin"
   >("home");
 
   // State Phân quyền Admin
   const [adminRole, setAdminRole] = useState<AdminRole>("SUPER_ADMIN");
 
-  // State Tìm kiếm & Danh mục
-  const [searchQuery, setSearchQuery] = useState("");
+  // State Tìm kiếm & Sản phẩm
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [selectedBagIndex, setSelectedBagIndex] = useState<number>(1);
   const [isOpening, setIsOpening] = useState<boolean>(false);
   const [wonReward, setWonReward] = useState<string | null>(null);
 
-  // State Kho Acc Admin & Đồ đã xé
+  // State Kho & Túi đồ
   const [stock, setStock] = useState<StockAccount[]>([
     { id: "ACC1", game: "TÚI MÙ LIÊN QUÂN", accountInfo: "TK: lienquan_vip1 | MK: pass123 | Note: Skin SS", status: "AVAILABLE" },
     { id: "ACC2", game: "TÚI MÙ FC MOBILE", accountInfo: "TK: fcmobile_99 | MK: pass456 | Note: OVR 130+", status: "AVAILABLE" }
@@ -57,23 +69,23 @@ export default function App() {
   ]);
 
   // State Form Thêm Acc
-  const [newAccCategory, setNewAccCategory] = useState("TÚI MÙ LIÊN QUÂN");
-  const [newAccInfo, setNewAccInfo] = useState("");
+  const [newAccCategory, setNewAccCategory] = useState<string>("TÚI MÙ LIÊN QUÂN");
+  const [newAccInfo, setNewAccInfo] = useState<string>("");
 
-  // Data Sản Phẩm
-  const [lienQuanProducts] = useState<Product[]>([
+  // Dữ liệu mẫu
+  const lienQuanProducts: Product[] = [
     { id: 1, name: "TÚI MÙ LIÊN QUÂN 1K", price: 1000, plays: 5870, views: 3306, rating: 5, category: "TÚI MÙ LIÊN QUÂN", image: "https://i.ibb.co/3Wq8pM4/lien-quan.jpg" },
     { id: 2, name: "TÚI MÙ LIÊN QUÂN 5K", price: 5000, plays: 2344, views: 2530, rating: 5, category: "TÚI MÙ LIÊN QUÂN", image: "https://i.ibb.co/3Wq8pM4/lien-quan.jpg" },
-    { id: 3, name: "TÚI MÙ LIÊN QUÂN 149K", price: 149000, plays: 120, views: 615, rating: 5, category: "TÚI MÙ LIÊN QUÂN", image: "https://i.ibb.co/3Wq8pM4/lien-quan.jpg" },
-  ]);
+    { id: 3, name: "TÚI MÙ LIÊN QUÂN 149K", price: 149000, plays: 120, views: 615, rating: 5, category: "TÚI MÙ LIÊN QUÂN", image: "https://i.ibb.co/3Wq8pM4/lien-quan.jpg" }
+  ];
 
-  const [fcMobileProducts] = useState<Product[]>([
+  const fcMobileProducts: Product[] = [
     { id: 4, name: "TÚI MÙ FCMB 5K", price: 5000, plays: 3644, views: 1748, rating: 5, category: "TÚI MÙ FC MOBILE", image: "https://i.ibb.co/Z8P23Q0/fc-mobile.jpg" },
     { id: 5, name: "TÚI MÙ FCMB 10K", price: 10000, plays: 3863, views: 1677, rating: 5, category: "TÚI MÙ FC MOBILE", image: "https://i.ibb.co/Z8P23Q0/fc-mobile.jpg" },
-    { id: 6, name: "TÚI MÙ FCMB 15K", price: 15000, plays: 1881, views: 1248, rating: 5, category: "TÚI MÙ FC MOBILE", image: "https://i.ibb.co/Z8P23Q0/fc-mobile.jpg" },
-  ]);
+    { id: 6, name: "TÚI MÙ FCMB 15K", price: 15000, plays: 1881, views: 1248, rating: 5, category: "TÚI MÙ FC MOBILE", image: "https://i.ibb.co/Z8P23Q0/fc-mobile.jpg" }
+  ];
 
-  // Xử lý nút bấm chung
+  // Hàm xử lý sự kiện
   const handleOpenDetail = (prod: Product) => {
     setSelectedProduct(prod);
     setSelectedBagIndex(1);
@@ -138,11 +150,10 @@ export default function App() {
   return (
     <div style={{ backgroundColor: "#f4f6f9", color: "#333", fontFamily: "Helvetica, Arial, sans-serif", minHeight: "100vh" }}>
       
-      {/* 1. HEADER TOP CHUẨN KÈM TẤT CẢ NÚT BẤM */}
+      {/* HEADER TOP */}
       <div style={{ backgroundColor: "#fff", borderBottom: "1px solid #e5e7eb", padding: "8px 20px" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "10px" }}>
           
-          {/* Logo, Danh mục, Đã xem & Ô Tìm kiếm */}
           <div style={{ display: "flex", alignItems: "center", gap: "12px", flex: 1, minWidth: "300px" }}>
             <div onClick={() => setActiveTab("home")} style={{ fontWeight: "bold", fontSize: "22px", color: "#2563eb", cursor: "pointer" }}>
               SHOPACC89.COM
@@ -168,7 +179,6 @@ export default function App() {
             </div>
           </div>
 
-          {/* User & Các Nút Điều Hướng Phải */}
           <div style={{ display: "flex", alignItems: "center", gap: "10px", fontSize: "13px" }}>
             <button onClick={() => setActiveTab("topup")} style={{ backgroundColor: "#1e40af", color: "#fff", border: "none", padding: "6px 16px", borderRadius: "6px", fontWeight: "bold", cursor: "pointer" }}>
               Nạp tiền
@@ -187,7 +197,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* 2. THANH MENU ĐIỀU HƯỚNG SỐ 2 (TẤT CẢ NÚT BẤM ĐÃ KÍCH HOẠT) */}
+      {/* THANH MENU ĐIỀU HƯỚNG */}
       <div style={{ backgroundColor: "#fff", borderBottom: "1px solid #e5e7eb", padding: "10px 20px" }}>
         <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", gap: "18px", fontSize: "14px", fontWeight: "bold", color: "#4b5563", flexWrap: "wrap" }}>
           <span onClick={() => setActiveTab("home")} style={{ color: activeTab === "home" ? "#2563eb" : "inherit", cursor: "pointer" }}>Trang chủ</span>
@@ -202,13 +212,11 @@ export default function App() {
         </div>
       </div>
 
-      {/* 3. NỘI DUNG TƯƠNG ỨNG MỖI NÚT MENU */}
+      {/* NỘI DUNG CHÍNH */}
       <div style={{ maxWidth: "1200px", margin: "20px auto", padding: "0 15px" }}>
 
-        {/* --- TAB TRANG CHỦ --- */}
         {activeTab === "home" && (
           <div>
-            {/* Banner Top & Top Nạp */}
             <div style={{ display: "grid", gridTemplateColumns: "300px 1fr", gap: "20px", marginBottom: "25px" }}>
               <div style={{ backgroundColor: "#fff", padding: "15px", borderRadius: "10px", border: "1px solid #e5e7eb" }}>
                 <div style={{ display: "flex", borderBottom: "2px solid #2563eb", paddingBottom: "8px", marginBottom: "15px" }}>
@@ -232,24 +240,20 @@ export default function App() {
                   </div>
                 </div>
                 
-                {/* NÚT NẠP TIỀN NGAY HOẠT ĐỘNG */}
                 <button onClick={() => setActiveTab("topup")} style={{ width: "100%", backgroundColor: "#ef4444", color: "#fff", border: "none", padding: "8px", borderRadius: "6px", fontWeight: "bold", marginTop: "15px", cursor: "pointer" }}>
                   Nạp tiền ngay
                 </button>
               </div>
 
-              {/* Banner Quảng Cáo */}
               <div style={{ backgroundColor: "#0f172a", borderRadius: "10px", padding: "20px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", color: "#fff", textAlign: "center" }}>
                 <h1 style={{ color: "#38bdf8", fontSize: "32px", margin: "0 0 10px 0" }}>SHOPACC89.COM</h1>
                 <p style={{ fontSize: "18px", margin: "0 0 15px 0" }}>SHOP ACC GAME GIÁ RẺ - UY TÍN - TỰ ĐỘNG 24/7</p>
-                {/* NÚT MUA NGAY HOẠT ĐỘNG */}
                 <button onClick={() => handleOpenDetail(lienQuanProducts[0])} style={{ backgroundColor: "#2563eb", color: "#fff", border: "none", padding: "10px 30px", borderRadius: "20px", fontWeight: "bold", cursor: "pointer", fontSize: "16px" }}>
                   MUA NGAY
                 </button>
               </div>
             </div>
 
-            {/* DANH MỤC TÚI MÙ LIÊN QUÂN */}
             <div style={{ marginBottom: "30px" }}>
               <h2 style={{ fontSize: "20px", fontWeight: "bold", margin: "0 0 15px 0", color: "#1e293b" }}>TÚI MÙ LIÊN QUÂN</h2>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "20px" }}>
@@ -270,7 +274,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* DANH MỤC TÚI MÙ FC MOBILE */}
             <div>
               <h2 style={{ fontSize: "20px", fontWeight: "bold", margin: "0 0 15px 0", color: "#1e293b" }}>TÚI MÙ FC MOBILE</h2>
               <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "20px" }}>
@@ -293,7 +296,6 @@ export default function App() {
           </div>
         )}
 
-        {/* --- CHI TIẾT MỞ TÚI MÙ --- */}
         {activeTab === "detail" && selectedProduct && (
           <div>
             <button onClick={() => setActiveTab("home")} style={{ backgroundColor: "#64748b", color: "#fff", border: "none", padding: "8px 16px", borderRadius: "6px", cursor: "pointer", marginBottom: "15px", fontWeight: "bold" }}>
@@ -325,7 +327,6 @@ export default function App() {
           </div>
         )}
 
-        {/* --- NẠP THẺ CÀO (MENU 2) --- */}
         {activeTab === "card_recharge" && (
           <div style={{ backgroundColor: "#fff", padding: "20px", borderRadius: "12px", maxWidth: "500px", margin: "0 auto", border: "1px solid #e2e8f0" }}>
             <h2 style={{ color: "#2563eb", marginTop: 0 }}>💳 NẠP THẺ CÀO TỰ ĐỘNG</h2>
@@ -338,7 +339,6 @@ export default function App() {
           </div>
         )}
 
-        {/* --- NẠP TIỀN BANK (MENU 2) --- */}
         {activeTab === "topup" && (
           <div style={{ backgroundColor: "#fff", padding: "20px", borderRadius: "12px", maxWidth: "500px", margin: "0 auto", border: "1px solid #e2e8f0" }}>
             <h2 style={{ color: "#2563eb", textAlign: "center", marginTop: 0 }}>NẠP TIỀN NGÂN HÀNG TỰ ĐỘNG</h2>
@@ -354,7 +354,6 @@ export default function App() {
           </div>
         )}
 
-        {/* --- DỊCH VỤ / MUA ACC / CẤP BẬC / HƯỚNG DẪN / CTV --- */}
         {["service", "system", "buy_acc", "ctv", "ranks", "guide", "history_viewed"].includes(activeTab) && (
           <div style={{ backgroundColor: "#fff", padding: "30px", borderRadius: "12px", border: "1px solid #e2e8f0", textAlign: "center" }}>
             <h2 style={{ color: "#2563eb" }}>MỤC: {activeTab.toUpperCase()}</h2>
@@ -363,7 +362,6 @@ export default function App() {
           </div>
         )}
 
-        {/* --- TÚI ĐỒ VẬT PHẨM --- */}
         {activeTab === "withdraw" && (
           <div style={{ backgroundColor: "#fff", padding: "20px", borderRadius: "12px", border: "1px solid #e2e8f0" }}>
             <h2 style={{ marginTop: 0 }}>🎒 TÚI ĐỒ VẬT PHẨM ĐÃ MỞ ({inventory.length})</h2>
@@ -376,11 +374,9 @@ export default function App() {
           </div>
         )}
 
-        {/* --- 4. HỆ THỐNG QUẢN TRỊ ADMIN PHÂN QUYỀN CHUYÊN NGHIỆP --- */}
         {activeTab === "admin" && (
           <div style={{ backgroundColor: "#fff", padding: "20px", borderRadius: "12px", border: "2px solid #10b981" }}>
             
-            {/* THANH CHUYỂN ĐỔI ROLE ĐỂ TEST THỬ QUYỀN */}
             <div style={{ backgroundColor: "#f0fdf4", padding: "12px", borderRadius: "8px", marginBottom: "20px", display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap" }}>
               <div style={{ fontWeight: "bold", color: "#047857" }}>🛡 HỆ THỐNG PHÂN QUYỀN ADMIN:</div>
               <div style={{ display: "flex", gap: "8px" }}>
@@ -391,7 +387,6 @@ export default function App() {
               </div>
             </div>
 
-            {/* NHÓM A: KHO ACC (Super Admin + Content Admin) */}
             {["SUPER_ADMIN", "CONTENT_ADMIN"].includes(adminRole) && (
               <div style={{ backgroundColor: "#fafafa", padding: "15px", borderRadius: "8px", border: "1px solid #e5e7eb", marginBottom: "20px" }}>
                 <h3 style={{ margin: "0 0 10px 0", color: "#2563eb", fontSize: "16px" }}>📦 QUẢN LÝ KHO ACC & DANH MỤC</h3>
@@ -417,7 +412,6 @@ export default function App() {
               </div>
             )}
 
-            {/* NHÓM B: CSKH & ĐƠN HÀNG (Super Admin + Support Admin) */}
             {["SUPER_ADMIN", "SUPPORT_ADMIN"].includes(adminRole) && (
               <div style={{ backgroundColor: "#fafafa", padding: "15px", borderRadius: "8px", border: "1px solid #e5e7eb", marginBottom: "20px" }}>
                 <h3 style={{ margin: "0 0 10px 0", color: "#ef4444", fontSize: "16px" }}>💬 QUẢN LÝ ĐƠN HÀNG & CSKH KHIẾU NẠI</h3>
@@ -428,7 +422,6 @@ export default function App() {
               </div>
             )}
 
-            {/* NHÓM C: TÀI CHÍNH & NẠP TIỀN (Super Admin + Finance Admin) */}
             {["SUPER_ADMIN", "FINANCE_ADMIN"].includes(adminRole) && (
               <div style={{ backgroundColor: "#fafafa", padding: "15px", borderRadius: "8px", border: "1px solid #e5e7eb", marginBottom: "20px" }}>
                 <h3 style={{ margin: "0 0 10px 0", color: "#16a34a", fontSize: "16px" }}>💰 TÀI CHÍNH, DUYỆT NẠP & DÒNG TIỀN</h3>
@@ -439,7 +432,6 @@ export default function App() {
               </div>
             )}
 
-            {/* NHÓM D: CẤU HÌNH HỆ THỐNG & USER (Chỉ Super Admin) */}
             {adminRole === "SUPER_ADMIN" && (
               <div style={{ backgroundColor: "#fef2f2", padding: "15px", borderRadius: "8px", border: "1px solid #fca5a5" }}>
                 <h3 style={{ margin: "0 0 10px 0", color: "#991b1b", fontSize: "16px" }}>👑 CHỈ DÀNH CHO SUPER ADMIN (OWNER)</h3>
@@ -452,7 +444,6 @@ export default function App() {
 
       </div>
 
-      {/* POPUP HIỂN THỊ KHI XÉ TRÚNG ACC */}
       {wonReward && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, backgroundColor: "rgba(0,0,0,0.75)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999 }}>
           <div style={{ backgroundColor: "#fff", padding: "25px", borderRadius: "12px", textAlign: "center", maxWidth: "400px" }}>
