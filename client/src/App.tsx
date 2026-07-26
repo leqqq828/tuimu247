@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "interface" ? {} : React; // Keep imports clean
 
 interface Product {
   id: number;
@@ -8,6 +8,12 @@ interface Product {
   imageUrl: string;
   category: string;
   inStock: boolean;
+}
+
+interface User {
+  username: string;
+  password: string;
+  isAdmin: boolean;
 }
 
 const INITIAL_PRODUCTS: Product[] = [
@@ -31,15 +37,28 @@ const INITIAL_PRODUCTS: Product[] = [
   }
 ];
 
-// 🔐 ĐẶT MẬT KHẨU ADMIN CỦA BẠN Ở ĐÂY (VD: 123456)
-const ADMIN_PASSWORD = "123"; 
-
 export default function App() {
   const [products, setProducts] = useState<Product[]>(INITIAL_PRODUCTS);
   const [cartCount, setCartCount] = useState<number>(0);
-  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  
+  // Danh sách tài khoản mẫu (Có sẵn 1 tài khoản Admin cốt lõi)
+  const [users, setUsers] = useState<User[]>([
+    { username: "admin", password: "123", isAdmin: true }
+  ]);
+  
+  // Trạng thái đăng nhập của người dùng hiện tại
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
+  
+  // Trạng thái giao diện Modal Đăng nhập / Đăng ký
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [isRegisterMode, setIsRegisterMode] = useState<boolean>(false);
+  const [usernameInput, setUsernameInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
 
-  // Form state cho Admin
+  // Trạng thái bật/tắt trang Quản lý (Admin Dashboard)
+  const [isAdminView, setIsAdminView] = useState<boolean>(false);
+
+  // Form state cho thêm sản phẩm
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [category, setCategory] = useState("Blindbox");
@@ -48,20 +67,56 @@ export default function App() {
 
   const addToCart = () => setCartCount((prev) => prev + 1);
 
-  // Hàm kiểm tra mật khẩu khi bấm vào nút Admin
-  const handleAdminClick = () => {
-    if (isAdmin) {
-      setIsAdmin(false); // Nếu đang ở trang admin thì bấm để thoát
+  // Xử lý Đăng nhập
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    const foundUser = users.find(
+      (u) => u.username === usernameInput && u.password === passwordInput
+    );
+    if (foundUser) {
+      setCurrentUser(foundUser);
+      setShowAuthModal(false);
+      setUsernameInput("");
+      setPasswordInput("");
+      alert(Đăng nhập thành công! Chào mừng ${foundUser.username});
     } else {
-      const password = prompt("Nhập mật khẩu Admin để tiếp tục:");
-      if (password === ADMIN_PASSWORD) {
-        setIsAdmin(true);
-      } else if (password !== null) {
-        alert("Sai mật khẩu rồi bạn ơi! ❌");
-      }
+      alert("Sai tên đăng nhập hoặc mật khẩu! ❌");
     }
   };
 
+  // Xử lý Đăng ký tài khoản mới
+  const handleRegister = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!usernameInput || !passwordInput) {
+      return alert("Vui lòng nhập đầy đủ thông tin!");
+    }
+    const exists = users.some((u) => u.username === usernameInput);
+    if (exists) {
+      return alert("Tên tài khoản này đã tồn tại, vui lòng chọn tên khác!");
+    }
+
+    const newUser: User = {
+      username: usernameInput,
+      password: passwordInput,
+      isAdmin: false // Tài khoản đăng ký mới mặc định là khách hàng thường
+    };
+
+    setUsers([...users, newUser]);
+    setCurrentUser(newUser);
+    setShowAuthModal(false);
+    setUsernameInput("");
+    setPasswordInput("");
+    alert("Đăng ký tài khoản thành công!");
+  };
+
+  // Đăng xuất
+  const handleLogout = () => {
+    setCurrentUser(null);
+    setIsAdminView(false);
+    alert("Đã đăng xuất tài khoản!");
+  };
+
+  // Thêm sản phẩm (Dành riêng cho Admin)
   const handleAddProduct = (e: React.FormEvent) => {
     e.preventDefault();
     if (!name || !price) return alert("Vui lòng nhập tên và giá sản phẩm!");
@@ -91,27 +146,96 @@ export default function App() {
   };
 
   return (
-    <div style={{ fontFamily: "sans-serif", backgroundColor: "#f9fafb", minHeight: "100vh", paddingBottom: "40px" }}>
+    <div style={{ fontFamily: "sans-serif", backgroundColor: "#f9fafb", minHeight: "100vh", paddingBottom: "40px", position: "relative" }}>
+      {/* Header */}
       <header style={{ backgroundColor: "#ffffff", borderBottom: "1px solid #e5e7eb", padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#ec4899", margin: 0 }}>LQ Shop - Túi Mù 247</h1>
+        <h1 style={{ fontSize: "24px", fontWeight: "bold", color: "#ec4899", margin: 0, cursor: "pointer" }} onClick={() => setIsAdminView(false)}>
+          LQ Shop - Túi Mù 247
+        </h1>
+        
         <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          {/* Nút đăng nhập bảo mật */}
-          <button 
-            onClick={handleAdminClick} 
-            style={{ backgroundColor: isAdmin ? "#111827" : "#f3f4f6", color: isAdmin ? "#fff" : "#374151", padding: "8px 16px", borderRadius: "20px", border: "1px solid #d1d5db", cursor: "pointer", fontWeight: "600" }}
-          >
-            {isAdmin ? "⚙️ Thoát Admin" : "🔒 Trang Admin"}
-          </button>
-          
-          {!isAdmin && (
-            <button style={{ backgroundColor: "#ec4899", color: "white", padding: "8px 16px", borderRadius: "20px", border: "none", cursor: "pointer", fontWeight: "bold" }}>
+          {currentUser ? (
+            <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+              <span style={{ fontSize: "14px", fontWeight: "600", color: "#374151" }}>
+                👤 {currentUser.username} {currentUser.isAdmin && "(Admin)"}
+              </span>
+
+              {/* Nếu là Admin thì hiện nút Quản lý */}
+              {currentUser.isAdmin && (
+                <button 
+                  onClick={() => setIsAdminView(!isAdminView)} 
+                  style={{ backgroundColor: isAdminView ? "#111827" : "#ec4899", color: "#fff", padding: "6px 14px", borderRadius: "20px", border: "none", cursor: "pointer", fontWeight: "600", fontSize: "13px" }}
+                >
+                  {isAdminView ? "🏠 Xem Shop" : "⚙️ Quản lý Shop"}
+                </button>
+              )}
+
+              <button onClick={handleLogout} style={{ backgroundColor: "#f3f4f6", color: "#374151", padding: "6px 12px", borderRadius: "20px", border: "1px solid #d1d5db", cursor: "pointer", fontSize: "13px" }}>
+                Đăng xuất
+              </button>
+            </div>
+          ) : (
+            <button 
+              onClick={() => { setShowAuthModal(true); setIsRegisterMode(false); }} 
+              style={{ backgroundColor: "#ec4899", color: "white", padding: "8px 16px", borderRadius: "20px", border: "none", cursor: "pointer", fontWeight: "bold", fontSize: "14px" }}
+            >
+              🔑 Đăng nhập / Đăng ký
+            </button>
+          )}
+
+          {!isAdminView && (
+            <button style={{ backgroundColor: "#fbcfe8", color: "#831843", padding: "8px 16px", borderRadius: "20px", border: "none", cursor: "pointer", fontWeight: "bold" }}>
               🛒 Giỏ hàng ({cartCount})
             </button>
           )}
         </div>
       </header>
 
-      {isAdmin ? (
+      {/* MODAL ĐĂNG NHẬP / ĐĂNG KÝ */}
+      {showAuthModal && (
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", backgroundColor: "rgba(0,0,0,0.5)", display: "flex", justifyContent: "center", alignItems: "center", zIndex: 1000 }}>
+          <div style={{ backgroundColor: "#fff", padding: "30px", borderRadius: "12px", width: "350px", boxShadow: "0 4px 12px rgba(0,0,0,0.15)", position: "relative" }}>
+            <button onClick={() => setShowAuthModal(false)} style={{ position: "absolute", top: "12px", right: "12px", border: "none", background: "none", fontSize: "18px", cursor: "pointer" }}>✕</button>
+            
+            <h2 style={{ marginTop: 0, color: "#111827", fontSize: "20px", textAlign: "center" }}>
+              {isRegisterMode ? "📝 Đăng ký tài khoản" : "🔐 Đăng nhập hệ thống"}
+            </h2>
+
+            <form onSubmit={isRegisterMode ? handleRegister : handleLogin} style={{ display: "flex", flexDirection: "column", gap: "12px", marginTop: "16px" }}>
+              <input 
+                type="text" 
+                placeholder="Tên tài khoản" 
+                value={usernameInput} 
+                onChange={(e) => setUsernameInput(e.target.value)} 
+                style={{ padding: "10px", borderRadius: "6px", border: "1px solid #d1d5db" }} 
+                required 
+              />
+              <input 
+                type="password" 
+                placeholder="Mật khẩu" 
+                value={passwordInput} 
+                onChange={(e) => setPasswordInput(e.target.value)} 
+                style={{ padding: "10px", borderRadius: "6px", border: "1px solid #d1d5db" }} 
+                required 
+              />
+              <button type="submit" style={{ backgroundColor: "#ec4899", color: "white", padding: "10px", borderRadius: "6px", border: "none", cursor: "pointer", fontWeight: "bold", marginTop: "8px" }}>
+                {isRegisterMode ? "Đăng ký ngay" : "Đăng nhập"}
+              </button>
+            </form>
+
+            <div style={{ textAlign: "center", marginTop: "16px", fontSize: "14px" }}>
+              {isRegisterMode ? (
+                <span>Đã có tài khoản? <span style={{ color: "#ec4899", cursor: "pointer", fontWeight: "bold" }} onClick={() => setIsRegisterMode(false)}>Đăng nhập</span></span>
+              ) : (
+                <span>Chưa có tài khoản? <span style={{ color: "#ec4899", cursor: "pointer", fontWeight: "bold" }} onClick={() => setIsRegisterMode(true)}>Đăng ký ngay</span></span>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* GIAO DIỆN QUẢN LÝ ADMIN (Chỉ khi Admin bật) */}
+      {isAdminView && currentUser?.isAdmin ? (
         <main style={{ maxWidth: "800px", margin: "24px auto", padding: "0 16px" }}>
           <div style={{ backgroundColor: "#ffffff", padding: "24px", borderRadius: "12px", border: "1px solid #e5e7eb", marginBottom: "32px" }}>
             <h2 style={{ marginTop: 0, color: "#111827", fontSize: "20px" }}>➕ Thêm sản phẩm túi mù mới</h2>
@@ -148,6 +272,7 @@ export default function App() {
           </div>
         </main>
       ) : (
+        /* GIAO DIỆN KHÁCH HÀNG XEM & MUA */
         <>
           <section style={{ backgroundColor: "#fbcfe8", padding: "32px 24px", textAlign: "center", marginBottom: "24px" }}>
             <h2 style={{ fontSize: "28px", color: "#831843", margin: "0 0 8px 0" }}>LQ Shop - Chuyên Túi Mù & Blind Box Chính Hãng</h2>
@@ -185,3 +310,6 @@ export default function App() {
     </div>
   );
 }
+Đã gửi
+Soạn
+
